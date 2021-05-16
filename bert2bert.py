@@ -13,13 +13,11 @@ Original file is located at
 ### **Data Preprocessing**
 """
 
-# Commented out IPython magic to ensure Python compatibility.
-# %%capture
-# !pip install datasets==1.0.2
-# !pip install transformers==4.2.1
-# 
-# import datasets
-# import transformers
+!pip install datasets==1.0.2
+!pip install transformers==4.2.1
+!pip install rouge_score
+import datasets
+import transformers
 
 from transformers import BertTokenizerFast
 
@@ -30,7 +28,7 @@ tokenizer.eos_token = tokenizer.sep_token
 train_data = datasets.load_dataset("cnn_dailymail", "3.0.0", split="train")
 val_data = datasets.load_dataset("cnn_dailymail", "3.0.0", split="validation[:10%]")
 
-batch_size=16
+batch_size=16  # change to 16 for full training
 encoder_max_length=512
 decoder_max_length=128
 
@@ -51,6 +49,7 @@ def process_data_to_model_inputs(batch):
 
   return batch
 
+# only use 32 training examples for notebook - DELETE LINE FOR FULL TRAINING
 
 
 train_data = train_data.map(
@@ -63,6 +62,8 @@ train_data.set_format(
     type="torch", columns=["input_ids", "attention_mask", "decoder_input_ids", "decoder_attention_mask", "labels"],
 )
 
+
+# only use 16 training examples for notebook - DELETE LINE FOR FULL TRAINING
 
 
 val_data = val_data.map(
@@ -162,12 +163,12 @@ import datasets
 from transformers import BertTokenizer, EncoderDecoderModel
 
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
-model = EncoderDecoderModel.from_pretrained("./checkpoint-16")
+model = EncoderDecoderModel.from_pretrained("./checkpoint-500")
 model.to("cuda")
 
 test_data = datasets.load_dataset("cnn_dailymail", "3.0.0", split="test")
 
-
+# only use 16 training examples for notebook - DELETE LINE FOR FULL TRAINING
 
 batch_size = 64  # change to 64 for full evaluation
 
